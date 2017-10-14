@@ -24,7 +24,13 @@ def start():
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
     with open(details_filename) as f:
-        details = f.read()
+        details = f.readlines()
+    for line in details:
+        line_list = line.split(':')
+        if line_list[0]=="full_name":
+            full_name = line_list[1]
+        elif line_list[0]=="zid":
+            zid = line_list[1]
     f.close()
     f = open(image_filename,'rb')
     image_data = f.read()
@@ -33,7 +39,9 @@ def start():
     f.writelines(image_data)
     f.close()
     session['n'] = n + 1
-    return render_template('start.html', student_details=details,img_path="./static/"+student_to_show+".jpg")
+    return render_template('start.html', full_name=full_name,
+                            zid = zid,
+                            img_path="./static/"+student_to_show+".jpg")
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

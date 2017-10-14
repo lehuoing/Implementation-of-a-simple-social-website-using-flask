@@ -3,13 +3,17 @@
 {% block body_contents %}
 <div class="unswtalk_student_details">
 
-<img src="{{img_path}}" alt="No image" width="128" height="128">
-{{student_details}}
-
+<div class="student_profile" style="float:left">
+  <img src="{{img_path}}" alt="No image" width="150" height="150">
 </div>
 
-<form method="POST" action="">
-    <input type="hidden" name="n" value="7">
-    <input type="submit" value="Next student" class="unswtalk_button">
-</form>
+<h1>{{full_name}}<font size=-0.05>({{zid}})</font></h1>
+</div>
+
+<div style="clear:both">
+  <form method="POST" action="">
+      <input type="hidden" name="n" value="7">
+      <input type="submit" value="Next student" class="unswtalk_button">
+  </form>
+</div>
 {% endblock %}
