@@ -25,23 +25,41 @@ def start():
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
     with open(details_filename) as f:
         details = f.readlines()
+    full_name = ''
+    zid = ''
+    birthday = ''
+    program = ''
+    suburb = ''
     for line in details:
         line_list = line.split(':')
         if line_list[0]=="full_name":
             full_name = line_list[1]
         elif line_list[0]=="zid":
             zid = line_list[1]
+        elif line_list[0]=="birthday":
+            birthday = line_list[1]
+        elif line_list[0]=="program":
+            program = line_list[1]
+        elif line_list[0]=="home_suburb":
+            suburb = line_list[1]
     f.close()
-    f = open(image_filename,'rb')
-    image_data = f.read()
-    f.close()
-    f = open("./static/"+student_to_show+".jpg",'wb')
-    f.writelines(image_data)
-    f.close()
+    img_path="./static/"+student_to_show+".jpg"
+    try:
+        f = open(image_filename,'rb')
+        image_data = f.read()
+        f.close()
+        f = open("./static/"+student_to_show+".jpg",'wb')
+        f.writelines(image_data)
+        f.close()
+    except:
+        img_path = ''
     session['n'] = n + 1
     return render_template('start.html', full_name=full_name,
                             zid = zid,
-                            img_path="./static/"+student_to_show+".jpg")
+                            birthday = birthday,
+                            program = program,
+                            suburb = suburb,
+                            img_path=img_path)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
