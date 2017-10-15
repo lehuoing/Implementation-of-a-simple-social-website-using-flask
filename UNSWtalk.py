@@ -4,7 +4,7 @@
 # as a starting point for COMP[29]041 assignment 2
 # https://cgi.cse.unsw.edu.au/~cs2041/assignments/UNSWtalk/
 
-import os
+import os,re
 from flask import Flask, render_template, session
 
 # students_dir = "dataset-medium";
@@ -23,6 +23,12 @@ def start():
     student_to_show = students[n % len(students)]
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
+    post_list = []
+    all_data_files = sorted(os.listdir("{}/{}".format(students_dir,student_to_show)))
+    for each in all_data_files:
+        if re.match(r'\d+\.txt',each):
+            post_list.append(each)
+    post_list = sorted(post_list)
     with open(details_filename) as f:
         details = f.readlines()
     full_name = ''
@@ -49,7 +55,7 @@ def start():
         image_data = f.read()
         f.close()
         f = open("./static/"+student_to_show+".jpg",'wb')
-        f.writelines(image_data)
+        f.write(image_data)
         f.close()
     except:
         img_path = ''
