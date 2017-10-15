@@ -7,7 +7,7 @@
   <img src="{{img_path}}" alt="No image" width="165" height="165">
 </div>
 
-  <div style="margin:0cm 0cm 0cm 4.6cm">
+  <div style="margin:0cm 0cm 0cm 4.6cm;width:440px">
     <h1>{{full_name}}<font size=-0.05>({{zid}})</font></h1>
     <p>Birthday: {{birthday}}</p>
     <p>Program: {{program}}</p>
@@ -17,7 +17,7 @@
 
   {% for message in post_list %}
   <div style="border-style: groove; background-color:white; position:relative; left:600px; top:-180px; width:750px; margin:0.5cm;">
-    <p style=" width:80%;">{{message[0]}} <p>
+    <p style="width:80%;">{{message[0]}} <p>
     <p style=" width:80%;">{{message[1]|safe}} <p>
   </div>
   {% endfor %}
