@@ -4,11 +4,13 @@
 # as a starting point for COMP[29]041 assignment 2
 # https://cgi.cse.unsw.edu.au/~cs2041/assignments/UNSWtalk/
 
-import os,re
+import os,re,sys
 from flask import Flask, render_template, session
+reload(sys)
+sys.setdefaultencoding('utf8')
 
-# students_dir = "dataset-medium";
-students_dir = "dataset-small";
+students_dir = "dataset-medium";
+# students_dir = "dataset-small";
 
 app = Flask(__name__)
 
@@ -24,11 +26,29 @@ def start():
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
     post_list = []
+    post_content = []
     all_data_files = sorted(os.listdir("{}/{}".format(students_dir,student_to_show)))
     for each in all_data_files:
         if re.match(r'\d+\.txt',each):
             post_list.append(each)
     post_list = sorted(post_list)
+
+    for each_post in range(len(post_list)-1,-1,-1):
+        each_post_path = students_dir + '/' + student_to_show + '/' + post_list[each_post]
+        f = open(each_post_path,'r')
+        data = f.readlines()
+        for each_line in data:
+            each_line_list = each_line.split(': ')
+            if each_line_list[0]=='time':
+                post_time = each_line_list[1]
+                post_time = re.sub(r'T',' ',post_time)
+                post_time = re.sub(r'\+0000','',post_time)
+            if each_line_list[0]=='message':
+                message = each_line_list[1]
+                message = re.sub(r'\\n','<br>',message)
+        post_content.append([post_time,message])
+        f.close()
+
     with open(details_filename) as f:
         details = f.readlines()
     full_name = ''
@@ -65,7 +85,8 @@ def start():
                             birthday = birthday,
                             program = program,
                             suburb = suburb,
-                            img_path=img_path)
+                            img_path=img_path,
+                            post_list=post_content)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

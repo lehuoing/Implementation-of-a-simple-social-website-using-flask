@@ -15,6 +15,13 @@
   </div>
 </div>
 
+  {% for message in post_list %}
+  <div style="border-style: groove; background-color:white; position:relative; left:600px; top:-180px; width:750px; margin:0.5cm;">
+    <p style=" width:80%;">{{message[0]}} <p>
+    <p style=" width:80%;">{{message[1]|safe}} <p>
+  </div>
+  {% endfor %}
+
 <div style="clear:both">
   <form method="POST" action="">
       <input type="hidden" name="n" value="7">
