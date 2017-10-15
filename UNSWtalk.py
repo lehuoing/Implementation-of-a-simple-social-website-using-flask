@@ -6,8 +6,9 @@
 
 import os,re,sys
 from flask import Flask, render_template, session
-reload(sys)
-sys.setdefaultencoding('utf8')
+if sys.version[0] == '2':
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
 
 students_dir = "dataset-medium";
 # students_dir = "dataset-small";
