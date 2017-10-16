@@ -10,6 +10,7 @@ if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
+
 students_dir = "dataset-medium";
 # students_dir = "dataset-small";
 
@@ -36,7 +37,7 @@ def start():
 
     for each_post in range(len(post_list)-1,-1,-1):
         each_post_path = students_dir + '/' + student_to_show + '/' + post_list[each_post]
-        f = open(each_post_path,'r')
+        f = open(each_post_path,'r', encoding='utf-8')
         data = f.readlines()
         for each_line in data:
             each_line_list = each_line.split(': ')
