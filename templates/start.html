@@ -27,7 +27,7 @@
   position:absolute; left:30px; top:400px;">
         <ul>
             {% for friend in friend_list %}
-            <div>
+            <div onmouseover="style.backgroundColor='lightblue'" onmouseout="style.backgroundColor='white'">
               <li style="height:2cm"> <img src="{{friend[1]}}" alt="" width="40" height="40"
                 style="position:relative; top:13px;"> {{friend[0]}}</li>
             </div>

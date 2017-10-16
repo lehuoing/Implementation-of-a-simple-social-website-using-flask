@@ -37,8 +37,10 @@ def start():
 
     for each_post in range(len(post_list)-1,-1,-1):
         each_post_path = students_dir + '/' + student_to_show + '/' + post_list[each_post]
-        f = open(each_post_path,'r', encoding='utf-8')
-        # f = open(each_post_path,'r')
+        if sys.version[0] == '2':
+            f = open(each_post_path,'r')
+        else:
+            f = open(each_post_path,'r', encoding='utf-8')
         data = f.readlines()
         for each_line in data:
             each_line_list = each_line.split(': ')
