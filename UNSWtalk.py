@@ -101,7 +101,6 @@ def start():
         except:
             each_path = ''
         friend_details.append([friend_name,each_path])
-        print(each_path)
     img_path="./static/"+student_to_show+".jpg"
     try:
         f = open(image_filename,'rb')
