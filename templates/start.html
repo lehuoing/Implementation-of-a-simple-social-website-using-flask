@@ -22,12 +22,15 @@
   </div>
   {% endfor %}
 
-  <h1 style="position:absolute; left:230px; top:320px;"> Friend list </h1>
-  <div style="overflow:scroll; height:300px; width:550px; border: solid 1px #aaa; margin: 0 auto;
+  <h1 style="position:absolute; left:220px; top:320px;"> Friend list </h1>
+  <div style="background-color:white; overflow:scroll; height:300px; width:550px; border: solid 1px #aaa; margin: 0 auto;
   position:absolute; left:30px; top:400px;">
         <ul>
             {% for friend in friend_list %}
-              <li>{{friend}}</li>
+            <div>
+              <li style="height:2cm"> <img src="{{friend[1]}}" alt="" width="40" height="40"
+                style="position:relative; top:13px;"> {{friend[0]}}</li>
+            </div>
             {% endfor %}
         </ul>
     </div>

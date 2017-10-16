@@ -75,8 +75,31 @@ def start():
         elif line_list[0]=="friends":
             line_list[1] = re.sub(r'[\(\)]','',line_list[1].strip())
             friend_list = line_list[1].split(', ')
-            print(friend_list)
     f.close()
+    friend_details = []
+    for each_friend in friend_list:
+        current_path = students_dir + "/" + each_friend + "/" + "student.txt"
+        f = open(current_path,'r')
+        friend_data = f.readlines()
+        f.close()
+        for each_data in friend_data:
+            each_list = each_data.split(':')
+            if each_list[0]=="full_name":
+                friend_name = each_list[1]
+                continue
+        current_path = students_dir + "/" + each_friend + "/" + "img.jpg"
+        try:
+            f = open(current_path,'rb')
+            curr_data = f.read()
+            f.close()
+            f = open("./static/"+each_friend+".jpg",'wb')
+            f.write(curr_data)
+            f.close()
+            each_path = "./static/"+each_friend+".jpg"
+        except:
+            each_path = ''
+        friend_details.append([friend_name,each_path])
+        print(each_path)
     img_path="./static/"+student_to_show+".jpg"
     try:
         f = open(image_filename,'rb')
@@ -95,7 +118,7 @@ def start():
                             suburb = suburb,
                             img_path=img_path,
                             post_list=post_content,
-                            friend_list=friend_list)
+                            friend_list=friend_details)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
