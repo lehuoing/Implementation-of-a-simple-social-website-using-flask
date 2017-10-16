@@ -38,6 +38,7 @@ def start():
     for each_post in range(len(post_list)-1,-1,-1):
         each_post_path = students_dir + '/' + student_to_show + '/' + post_list[each_post]
         f = open(each_post_path,'r', encoding='utf-8')
+        # f = open(each_post_path,'r')
         data = f.readlines()
         for each_line in data:
             each_line_list = each_line.split(': ')
@@ -58,6 +59,7 @@ def start():
     birthday = ''
     program = ''
     suburb = ''
+    friend_list = []
     for line in details:
         line_list = line.split(':')
         if line_list[0]=="full_name":
@@ -70,6 +72,10 @@ def start():
             program = line_list[1]
         elif line_list[0]=="home_suburb":
             suburb = line_list[1]
+        elif line_list[0]=="friends":
+            line_list[1] = re.sub(r'[\(\)]','',line_list[1].strip())
+            friend_list = line_list[1].split(', ')
+            print(friend_list)
     f.close()
     img_path="./static/"+student_to_show+".jpg"
     try:
@@ -88,7 +94,8 @@ def start():
                             program = program,
                             suburb = suburb,
                             img_path=img_path,
-                            post_list=post_content)
+                            post_list=post_content,
+                            friend_list=friend_list)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

@@ -22,6 +22,16 @@
   </div>
   {% endfor %}
 
+  <h1 style="position:absolute; left:230px; top:320px;"> Friend list </h1>
+  <div style="overflow:scroll; height:300px; width:550px; border: solid 1px #aaa; margin: 0 auto;
+  position:absolute; left:30px; top:400px;">
+        <ul>
+            {% for friend in friend_list %}
+              <li>{{friend}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
 <div style="clear:both">
   <form method="POST" action="">
       <input type="hidden" name="n" value="7">
