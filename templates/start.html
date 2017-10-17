@@ -3,6 +3,13 @@
 {% block body_contents %}
 <div class="unswtalk_student_details">
 
+<div style="float:right; position:relative; top:-80px; right:40px;">
+  <form method="POST" action="result">
+    <p> Name/ID: <input name="search_item" > <input type="submit" value="Search" > </p>
+  </form>
+</div>
+
+
 <div class="student_profile" style="float:left">
   <img src="{{img_path}}" alt="No image" width="165" height="165">
 </div>
@@ -34,7 +41,9 @@
             </div>
             {% endfor %}
         </ul>
-    </div>
+  </div>
+
+
 
 <div style="clear:both">
   <form method="POST" action="start">

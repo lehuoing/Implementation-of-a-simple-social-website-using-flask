@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+
+
+{% if current_result %}
+  {% for each_result in current_result %}
+    <p> <img src="{{each_result[2]}}" alt="No image" width="65" height="65"> {{each_result[0]}} {{each_result[1]}} </p>
+  {% endfor %}
+{% else %}
+    <p> No result. </p>
+{% endif %}
+
+
+<div>
+  <form method="POST" action="start">
+      <input type="submit" value="Return">
+  </form>
+</div>
+{% endblock %}

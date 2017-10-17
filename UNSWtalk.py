@@ -123,6 +123,75 @@ def start():
                             post_list=post_content,
                             friend_list=friend_details)
 
+
+
+@app.route('/result', methods=['GET','POST'])
+def result():
+    search_item = request.form.get('search_item','')
+    current_result = []
+    if re.match(r'^z\d+$',search_item):
+        current_path = students_dir + "/" + search_item + "/" + "student.txt"
+        try:
+            f = open(current_path,'r')
+            result_data = f.readlines()
+            f.close()
+            for each_data in result_data:
+                each_data = each_data.strip()
+                each_list = each_data.split(': ')
+                if each_list[0]=="full_name":
+                    result_name = each_list[1]
+                elif each_list[0]=="zid":
+                    result_zid = each_list[1]
+        except:
+            return render_template('result.html')
+        current_path = students_dir + "/" + search_item+ "/" + "img.jpg"
+        try:
+            f = open(current_path,'rb')
+            curr_data = f.read()
+            f.close()
+            f = open("./static/"+search_item+".jpg",'wb')
+            f.write(curr_data)
+            f.close()
+            result_path = "./static/"+search_item+".jpg"
+        except:
+            result_path = ''
+        current_result.append([result_name,result_zid,result_path])
+    elif search_item=='':
+        return render_template('result.html')
+    else:
+        students = sorted(os.listdir(students_dir))
+        for each_stu in students:
+            current_path = students_dir + "/" + each_stu + "/" + "student.txt"
+            f = open(current_path,'r')
+            result_data = f.readlines()
+            f.close()
+            for each_data in result_data:
+                each_data = each_data.strip()
+                each_list = each_data.split(': ')
+                if each_list[0]=="full_name":
+                    result_name = each_list[1]
+                elif each_list[0]=="zid":
+                    result_zid = each_list[1]
+            if re.search(search_item,result_name,flags=re.IGNORECASE):
+                current_path = students_dir + "/" + result_zid + "/" + "img.jpg"
+                try:
+                    f = open(current_path,'rb')
+                    curr_data = f.read()
+                    f.close()
+                    f = open("./static/"+result_zid+".jpg",'wb')
+                    f.write(curr_data)
+                    f.close()
+                    result_path = "./static/"+result_zid+".jpg"
+                except:
+                    result_path = ''
+                current_result.append([result_name,result_zid,result_path])
+    return render_template('result.html', current_result=current_result)
+
+
+
+
+
+
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
     app.run(debug=True)
