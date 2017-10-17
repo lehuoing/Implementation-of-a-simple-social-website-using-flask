@@ -5,7 +5,7 @@
 # https://cgi.cse.unsw.edu.au/~cs2041/assignments/UNSWtalk/
 
 import os,re,sys
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request
 if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding("utf-8")
@@ -25,6 +25,7 @@ def start():
     n = session.get('n', 0)
     students = sorted(os.listdir(students_dir))
     student_to_show = students[n % len(students)]
+    student_to_show = request.args.get('zid', student_to_show)
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
     post_list = []
@@ -47,7 +48,7 @@ def start():
             if each_line_list[0]=='time':
                 post_time = each_line_list[1]
                 post_time = re.sub(r'T',' ',post_time)
-                post_time = re.sub(r'\+0000','',post_time)
+                post_time = re.sub(r'\+\d{4}','',post_time)
             if each_line_list[0]=='message':
                 message = each_line_list[1]
                 message = re.sub(r'\\n','<br>',message)
@@ -78,6 +79,7 @@ def start():
             line_list[1] = re.sub(r'[\(\)]','',line_list[1].strip())
             friend_list = line_list[1].split(', ')
     f.close()
+    # friend list
     friend_details = []
     for each_friend in friend_list:
         current_path = students_dir + "/" + each_friend + "/" + "student.txt"
@@ -100,7 +102,7 @@ def start():
             each_path = "./static/"+each_friend+".jpg"
         except:
             each_path = ''
-        friend_details.append([friend_name,each_path])
+        friend_details.append([friend_name,each_path,each_friend])
     img_path="./static/"+student_to_show+".jpg"
     try:
         f = open(image_filename,'rb')
