@@ -26,6 +26,7 @@ def start():
     students = sorted(os.listdir(students_dir))
     student_to_show = students[n % len(students)]
     student_to_show = request.args.get('zid', student_to_show)
+    student_to_show = request.form.get('cometo', student_to_show)
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
     post_list = []

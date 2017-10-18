@@ -5,7 +5,13 @@
 
 {% if current_result %}
   {% for each_result in current_result %}
-    <p> <img src="{{each_result[2]}}" alt="No image" width="65" height="65"> {{each_result[0]}} {{each_result[1]}} </p>
+    <div style="position:relative; left:530px; height: 65px; width:400px; background-color:white; ">
+      <form method="POST" action="start" style="float:right;">
+        <input type="hidden" name="cometo" value="{{each_result[1]}}">
+        <p> <input type="submit" value="Go" > </p>
+      </form>
+    <p> <img src="{{each_result[2]}}" alt="No image" width="65" height="65"> {{each_result[0]}} ({{each_result[1]}})</p>
+  </div>
   {% endfor %}
 {% else %}
     <p> No result. </p>
