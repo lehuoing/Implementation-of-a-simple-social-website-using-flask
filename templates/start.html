@@ -4,7 +4,7 @@
 <div class="unswtalk_student_details">
 
 <div style="float:right; position:relative; top:-80px; right:40px;">
-  <form method="POST" action="result">
+  <form method="POST" action="{{url_for('result')}}">
     <p> Name/ID: <input name="search_item" > <input type="submit" value="Search" > </p>
   </form>
 </div>
@@ -46,7 +46,7 @@
 
 
 <div style="clear:both">
-  <form method="POST" action="start">
+  <form method="POST" action="{{url_for('start')}}">
       <input type="hidden" name="n" value="7">
       <input type="submit" value="Next student" class="unswtalk_button">
   </form>

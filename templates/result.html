@@ -6,7 +6,7 @@
 {% if current_result %}
   {% for each_result in current_result %}
     <div style="position:relative; left:530px; height: 65px; width:400px; background-color:white; ">
-      <form method="POST" action="start" style="float:right;">
+      <form method="POST" action="{{url_for('start')}}" style="float:right;">
         <input type="hidden" name="cometo" value="{{each_result[1]}}">
         <p> <input type="submit" value="Go" > </p>
       </form>
@@ -19,7 +19,7 @@
 
 
 <div>
-  <form method="POST" action="start">
+  <form method="POST" action="{{url_for('start')}}">
       <input type="submit" value="Return">
   </form>
 </div>
