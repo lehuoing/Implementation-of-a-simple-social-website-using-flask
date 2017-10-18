@@ -3,6 +3,13 @@
 {% block body_contents %}
 <div class="unswtalk_student_details">
 
+<div style="position:relative; top:-60px;">
+  <form method="POST" action="{{url_for('logout')}}">
+      <input type="submit" value="Log out" style="background-color:blue; font-size: 20px;">
+  </form>
+</div>
+
+
 <div style="float:right; position:relative; top:-80px; right:40px;">
   <form method="POST" action="{{url_for('result')}}">
     <p> Name/ID: <input name="search_item" > <input type="submit" value="Search" > </p>
@@ -11,7 +18,7 @@
 
 
 <div class="student_profile" style="float:left">
-  <img src="{{img_path}}" alt="No image" width="165" height="165">
+  <img src="{{img_path}}" alt="No image" width="165" height="165" style="position:relative; top:19px;">
 </div>
 
   <div style="margin:0cm 0cm 0cm 4.6cm;width:440px">

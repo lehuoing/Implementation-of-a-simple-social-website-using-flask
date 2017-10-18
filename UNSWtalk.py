@@ -28,7 +28,6 @@ def check_login():
     zid = request.form.get('zid', '')
     password = request.form.get('password', '')
     students = sorted(os.listdir(students_dir))
-    session['zid'] = zid
     if zid not in students:
         return render_template('login.html',error='Unknown zid')
     else:
@@ -44,7 +43,14 @@ def check_login():
                 break
         if read_password != password:
             return render_template('login.html',error='Wrong password')
+    session['zid'] = zid
     return start()
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('zid')
+    return render_template('login.html')
 
 
 
