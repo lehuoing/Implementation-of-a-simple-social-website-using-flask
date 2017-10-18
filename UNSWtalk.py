@@ -50,6 +50,8 @@ def check_login():
 
 @app.route('/start', methods=['GET','POST'])
 def start():
+    if 'zid' not in session:
+        return render_template('login.html')
     students = sorted(os.listdir(students_dir))
     student_to_show = session['zid']
     student_to_show = request.args.get('zid', student_to_show)
@@ -154,6 +156,8 @@ def start():
 
 @app.route('/result', methods=['GET','POST'])
 def result():
+    if 'zid' not in session:
+        return render_template('login.html')
     search_item = request.form.get('search_item','')
     current_result = []
     if re.match(r'^z\d+$',search_item):
