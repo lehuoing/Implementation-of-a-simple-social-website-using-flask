@@ -18,6 +18,22 @@ app = Flask(__name__)
 # Increment  n and store it in the session cookie
 
 @app.route('/', methods=['GET','POST'])
+def login():
+    return render_template('login.html')
+
+
+
+@app.route('/check_login', methods=['POST'])
+def check_login():
+    zid = request.form.get('zid', '')
+    password = request.form.get('password', '')
+    students = sorted(os.listdir(students_dir))
+    if zid not in students:
+        return render_template('login.html',error='Unknown zid')
+    return start()
+
+
+
 @app.route('/start', methods=['GET','POST'])
 def start():
     n = session.get('n', 0)
