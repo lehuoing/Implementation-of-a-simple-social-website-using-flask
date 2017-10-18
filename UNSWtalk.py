@@ -28,17 +28,30 @@ def check_login():
     zid = request.form.get('zid', '')
     password = request.form.get('password', '')
     students = sorted(os.listdir(students_dir))
+    session['zid'] = zid
     if zid not in students:
         return render_template('login.html',error='Unknown zid')
+    else:
+        current_path = students_dir + '/' + zid + '/' + "student.txt"
+        f = open(current_path,'r')
+        data = f.readlines()
+        f.close()
+        for each_line in data:
+            each_line = each_line.strip()
+            each_list = each_line.split(': ')
+            if each_list[0]=='password':
+                read_password = each_list[1]
+                break
+        if read_password != password:
+            return render_template('login.html',error='Wrong password')
     return start()
 
 
 
 @app.route('/start', methods=['GET','POST'])
 def start():
-    n = session.get('n', 0)
     students = sorted(os.listdir(students_dir))
-    student_to_show = students[n % len(students)]
+    student_to_show = session['zid']
     student_to_show = request.args.get('zid', student_to_show)
     student_to_show = request.form.get('cometo', student_to_show)
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
@@ -128,7 +141,6 @@ def start():
         f.close()
     except:
         img_path = ''
-    session['n'] = n + 1
     return render_template('start.html', full_name=full_name,
                             zid = zid,
                             birthday = birthday,

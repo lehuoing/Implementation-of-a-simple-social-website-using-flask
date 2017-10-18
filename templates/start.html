@@ -35,7 +35,7 @@
         <ul>
             {% for friend in friend_list %}
             <div onmouseover="style.backgroundColor='lightblue'" onmouseout="style.backgroundColor='white'";
-            onclick="window.location.href= '?zid={{friend[2]}}';return false">
+            onclick="window.location.href= 'start?zid={{friend[2]}}';return false">
               <li style="height:2cm;"> <img src="{{friend[1]}}" alt="" width="40" height="40"
                 style="position:relative; top:13px;"> {{friend[0]}}</li>
             </div>
@@ -43,12 +43,4 @@
         </ul>
   </div>
 
-
-
-<div style="clear:both">
-  <form method="POST" action="{{url_for('start')}}">
-      <input type="hidden" name="n" value="7">
-      <input type="submit" value="Next student" class="unswtalk_button">
-  </form>
-</div>
 {% endblock %}
