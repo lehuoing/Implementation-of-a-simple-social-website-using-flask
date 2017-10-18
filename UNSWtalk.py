@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
-# written by andrewt@cse.unsw.edu.au October 2017
-# as a starting point for COMP[29]041 assignment 2
-# https://cgi.cse.unsw.edu.au/~cs2041/assignments/UNSWtalk/
+# https://cgi.cse.unsw.edu.au/~z5129023/ass2/UNSWtalk.cgi/
 
 import os,re,sys
 from flask import Flask, render_template, session, request
