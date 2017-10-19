@@ -57,12 +57,17 @@ def logout():
 
 @app.route('/start', methods=['GET','POST'])
 def start():
+    flag = 0
     if 'zid' not in session:
         return render_template('login.html')
     students = sorted(os.listdir(students_dir))
     student_to_show = session['zid']
     student_to_show = request.args.get('zid', student_to_show)
+    if student_to_show!=session['zid']:
+        flag = 1
     student_to_show = request.form.get('cometo', student_to_show)
+    if student_to_show!=session['zid']:
+        flag = 1
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
     post_list = []
@@ -150,7 +155,8 @@ def start():
         f.close()
     except:
         img_path = ''
-    return render_template('start.html', full_name=full_name,
+    return render_template('start.html', flag=flag,
+                            full_name=full_name,
                             zid = zid,
                             birthday = birthday,
                             program = program,

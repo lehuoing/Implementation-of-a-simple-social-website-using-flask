@@ -9,25 +9,35 @@
   </form>
 </div>
 
+{% if flag == 1 %}
 <div style="position:relative; top:-92px; left:97px;">
   <form method="POST" action="{{url_for('start')}}">
       <input type="submit" value="Home page" style="background-color:blue; font-size: 20px;">
   </form>
 </div>
+{% endif %}
 
-
-<div style="position:relative; top:-124px; left:230px;">
+{% if flag == 0 %}
+<div style="position:relative; top:-92px; left:100px;">
   <form method="POST" action="{{url_for('posts')}}">
       <input type="submit" value="See friend's posts" style="background-color:blue; font-size: 20px;">
   </form>
 </div>
 
 
+<div style="position:relative; top:-20px; left:620px;">
+  <form method="POST" action="{{url_for('posts')}}">
+      <input type="submit" value="Make posts" style="background-color:lightgreen; font-size: 20px;">
+  </form>
+</div>
+{% endif %}
+
 <div style="float:right; position:relative; top:-100px; right:50px;">
   <form method="POST" action="{{url_for('result')}}">
     <p> Name/ID: <input name="search_item" > <input type="submit" value="Search" > </p>
   </form>
 </div>
+
 
 
 <div class="student_profile" style="float:left">
