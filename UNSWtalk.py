@@ -25,24 +25,25 @@ def login():
 
 @app.route('/check_login', methods=['POST'])
 def check_login():
-    zid = request.form.get('zid', '')
-    password = request.form.get('password', '')
-    students = sorted(os.listdir(students_dir))
-    if zid not in students:
-        return render_template('login.html',error='Unknown zid')
-    else:
-        current_path = students_dir + '/' + zid + '/' + "student.txt"
-        f = open(current_path,'r')
-        data = f.readlines()
-        f.close()
-        for each_line in data:
-            each_line = each_line.strip()
-            each_list = each_line.split(': ')
-            if each_list[0]=='password':
-                read_password = each_list[1]
-                break
-        if read_password != password:
-            return render_template('login.html',error='Wrong password')
+    # zid = request.form.get('zid', '')
+    # password = request.form.get('password', '')
+    # students = sorted(os.listdir(students_dir))
+    # if zid not in students:
+    #     return render_template('login.html',error='Unknown zid')
+    # else:
+    #     current_path = students_dir + '/' + zid + '/' + "student.txt"
+    #     f = open(current_path,'r')
+    #     data = f.readlines()
+    #     f.close()
+    #     for each_line in data:
+    #         each_line = each_line.strip()
+    #         each_list = each_line.split(': ')
+    #         if each_list[0]=='password':
+    #             read_password = each_list[1]
+    #             break
+    #     if read_password != password:
+    #         return render_template('login.html',error='Wrong password')
+    zid = 'z5190009'
     session['zid'] = zid
     return start()
 
@@ -223,6 +224,14 @@ def result():
                     result_path = ''
                 current_result.append([result_name,result_zid,result_path])
     return render_template('result.html', current_result=current_result)
+
+
+@app.route('/posts', methods=['POST'])
+def posts():
+    return render_template('friend_posts.html')
+
+
+
 
 
 

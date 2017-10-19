@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+<div style="position:relative; top:-55px; left:30px;">
+  <form method="POST" action="{{url_for('start')}}">
+      <input type="submit" value="Home page" style="background-color:blue; font-size: 20px;">
+  </form>
+</div>
+
+<div style="border-style: groove; background-color:white; width:750px; position:relative; left:320px;">
+  <p style="width:90%;"> 123 456<p>
+  <p style=" width:90%;">z123456 <p>
+</div>
+
+{% endblock %}
