@@ -237,9 +237,14 @@ def posts():
     return render_template('friend_posts.html')
 
 
+@app.route('/make_post', methods=['POST'])
+def make_post():
+    return render_template('make_post.html')
 
 
-
+@app.route('/save_post', methods=['POST'])
+def save_post():
+    return render_template('make_post.html')
 
 
 
