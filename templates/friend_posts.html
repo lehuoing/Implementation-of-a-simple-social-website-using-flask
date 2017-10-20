@@ -10,7 +10,7 @@
 {% for each_result in result_list %}
 <div style="border-style: groove; background-color:white; width:750px; position:relative; left:320px;
 margin:0cm 0cm 0.5cm 0cm;">
-  <p style="width:90%;">{{each_result[1]}}<p>
+  <a href="start?zid={{each_result[2]}}" style="width:90%;">{{each_result[1]}}</a>
   <p style=" width:90%;">{{each_result[0]}}<p>
   <p style=" width:90%;">{{each_result[3]|safe}}<p>
 </div>
