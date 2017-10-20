@@ -14,8 +14,6 @@ students_dir = "dataset-medium";
 
 app = Flask(__name__)
 
-#Show unformatted details for student "n".
-# Increment  n and store it in the session cookie
 
 @app.route('/', methods=['GET','POST'])
 def login():
@@ -330,6 +328,13 @@ def save_post():
     f.write("time: {}\n".format(curr_time))
     f.close()
     return render_template('make_post.html')
+
+
+
+
+@app.route('/post_result', methods=['POST'])
+def post_result():
+    return render_template('post_result.html')
 
 
 

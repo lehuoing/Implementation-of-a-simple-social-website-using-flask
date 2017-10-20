@@ -7,6 +7,12 @@
   </form>
 </div>
 
+<div style="float:right; position:relative; top:-100px; right:50px;">
+  <form method="POST" action="{{url_for('post_result')}}">
+    <p> Search post: <input name="search_item" > <input type="submit" value="Search" > </p>
+  </form>
+</div>
+
 {% for each_result in result_list %}
 <div style="border-style: groove; background-color:white; width:750px; position:relative; left:320px;
 margin:0cm 0cm 0.5cm 0cm;">
