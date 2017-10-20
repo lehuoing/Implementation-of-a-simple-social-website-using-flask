@@ -72,11 +72,16 @@ def start():
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
     post_list = []
     post_content = []
+    number_list = []
     all_data_files = sorted(os.listdir("{}/{}".format(students_dir,student_to_show)))
     for each in all_data_files:
         if re.match(r'\d+\.txt',each):
-            post_list.append(each)
-    post_list = sorted(post_list)
+            each_number = each.split('.')
+            number_list.append(int(each_number[0]))
+    number_list=sorted(number_list)
+    for each_number in number_list:
+        each_file = str(each_number) + '.txt'
+        post_list.append(each_file)
 
     for each_post in range(len(post_list)-1,-1,-1):
         each_post_path = students_dir + '/' + student_to_show + '/' + post_list[each_post]
@@ -244,6 +249,22 @@ def make_post():
 
 @app.route('/save_post', methods=['POST'])
 def save_post():
+    student_to_show = session['zid']
+    all_data_files = sorted(os.listdir("{}/{}".format(students_dir,student_to_show)))
+    number_list = []
+    post_content = request.form.get('post_content','')
+    for each in all_data_files:
+        if re.match(r'\d+\.txt',each):
+            each_number = each.split('.')
+            number_list.append(int(each_number[0]))
+    number_list=sorted(number_list)
+    new_number = number_list[-1] + 1
+    new_filename = str(new_number) + ".txt"
+    current_path = "{}/{}/{}".format(students_dir,student_to_show,new_filename)
+    # f = open(current_path,'w')
+    # print("from: {}".format(student_to_show), file=f)
+    # print("message: {}".format(message), file=f)
+    # f.close()
     return render_template('make_post.html')
 
 
