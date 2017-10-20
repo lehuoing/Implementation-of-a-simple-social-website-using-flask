@@ -239,7 +239,65 @@ def result():
 
 @app.route('/posts', methods=['POST'])
 def posts():
-    return render_template('friend_posts.html')
+    friend_list = []
+    name_id_dir = {}
+    message_dir = {}
+    post_time_list = []
+    result_list = []
+    student_to_show = session['zid']
+    current_path = students_dir + "/" + student_to_show + "/" + "student.txt"
+    f = open(current_path,'r')
+    friend_data = f.readlines()
+    f.close()
+    for each_data in friend_data:
+        each_data = each_data.strip()
+        line_list = each_data.split(': ')
+        if line_list[0]=='friends':
+            line_list[1] = re.sub(r'[\(\)]','',line_list[1].strip())
+            friend_list = line_list[1].split(', ')
+    for each_friend in friend_list:
+        current_path = students_dir + "/" + each_friend + "/" + "student.txt"
+        f = open(current_path,'r')
+        friend_data = f.readlines()
+        f.close()
+        for each_data in friend_data:
+            each_data = each_data.strip()
+            line_list = each_data.split(': ')
+            if line_list[0]=='full_name':
+                name_id_dir[each_friend]=line_list[1]
+                continue
+        all_data_files = sorted(os.listdir("{}/{}".format(students_dir,each_friend)))
+        for each in all_data_files:
+            if re.match(r'\d+\.txt',each):
+                each_path = students_dir + "/" + each_friend + "/" + each
+                if sys.version[0] == '2':
+                    f = open(each_path,'r')
+                else:
+                    f = open(each_path,'r', encoding='utf-8')
+                data = f.readlines()
+                for each_line in data:
+                    each_line = each_line.strip()
+                    each_line_list = each_line.split(': ')
+                    if each_line_list[0]=='time':
+                        post_time = each_line_list[1]
+                        post_time = re.sub(r'T',' ',post_time)
+                        post_time = re.sub(r'\+\d{4}','',post_time)
+                    if each_line_list[0]=='message':
+                        message = each_line_list[1]
+                        message = re.sub(r'\\n','<br>',message)
+                message_dir[post_time] = [post_time,name_id_dir[each_friend],each_friend,message]
+                post_time_list.append(post_time)
+                f.close()
+    post_time_list = sorted(post_time_list)
+    post_time_list.reverse()
+    for each_time in post_time_list:
+        result_list.append(message_dir[each_time])
+    return render_template('friend_posts.html',result_list = result_list)
+
+
+
+
+
 
 
 @app.route('/make_post', methods=['POST'])
