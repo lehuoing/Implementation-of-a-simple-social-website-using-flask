@@ -2,7 +2,7 @@
 
 # https://cgi.cse.unsw.edu.au/~z5129023/ass2/UNSWtalk.cgi/
 
-import os,re,sys
+import os,re,sys,time
 from flask import Flask, render_template, session, request
 if sys.version[0] == '2':
     reload(sys)
@@ -252,19 +252,25 @@ def save_post():
     student_to_show = session['zid']
     all_data_files = sorted(os.listdir("{}/{}".format(students_dir,student_to_show)))
     number_list = []
-    post_content = request.form.get('post_content','')
+    message = request.form.get('post_content','')
+    message = re.sub(r'\n','\\\\n',message)
     for each in all_data_files:
         if re.match(r'\d+\.txt',each):
             each_number = each.split('.')
             number_list.append(int(each_number[0]))
     number_list=sorted(number_list)
-    new_number = number_list[-1] + 1
+    if number_list!=[]:
+        new_number = number_list[-1] + 1
+    else:
+        new_number = 0
     new_filename = str(new_number) + ".txt"
+    curr_time = time.strftime("%Y-%m-%dT%H:%M:%S+0000", time.localtime())
     current_path = "{}/{}/{}".format(students_dir,student_to_show,new_filename)
-    # f = open(current_path,'w')
-    # print("from: {}".format(student_to_show), file=f)
-    # print("message: {}".format(message), file=f)
-    # f.close()
+    f = open(current_path,'w')
+    f.write("from: {}\n".format(student_to_show))
+    f.write("message: {}\n".format(message))
+    f.write("time: {}\n".format(curr_time))
+    f.close()
     return render_template('make_post.html')
 
 
