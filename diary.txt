@@ -4,3 +4,4 @@
 17/10/17	19:00	01:00	struggle with search names
 18/10/17	19:00	01:00	finish level 1
 20/10/17	18:00	01:00	finish part of level2 and polish code
+21/10/17	16:00	01:00	finish editing information and add/delete friends and half of showing comments

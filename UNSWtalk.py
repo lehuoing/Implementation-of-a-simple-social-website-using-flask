@@ -101,7 +101,8 @@ def start():
             if each_line_list[0]=='message':
                 message = each_line_list[1]
                 message = re.sub(r'\\n','<br>',message)
-        post_content.append([post_time,message])
+        post_inf = student_to_show + "/" + str(each_post) + ".txt"
+        post_content.append([post_time,message,post_inf])
         f.close()
 
     with open(details_filename) as f:
@@ -402,7 +403,6 @@ def post_result():
         result_list.append(message_dir[each_time])
     if need_search == '':
         return render_template('post_result.html')
-    print(result_list)
     return render_template('post_result.html',result_list=result_list,keywords=need_search)
 
 
@@ -512,6 +512,83 @@ def delete_friend():
     f.close()
     return redirect(url_for('start'))
 
+
+@app.route('/post_comment', methods=['GET','POST'])
+def post_comment():
+    name_zid_dir = {}
+    students = sorted(os.listdir(students_dir))
+    for each_stu in students:
+        current_path = students_dir + "/" + each_stu + "/" + "student.txt"
+        f = open(current_path,'r')
+        stu_data = f.readlines()
+        f.close()
+        for each_data in stu_data:
+            each_data = each_data.strip()
+            each_list = each_data.split(': ')
+            if each_list[0]=="full_name":
+                name_zid_dir[each_stu] = each_list[1]
+                continue
+    post_id = request.args.get('postid', '')
+    current_post = students_dir + "/" + post_id
+    if sys.version[0] == '2':
+        f = open(current_post,'r')
+    else:
+        f = open(current_post,'r', encoding='utf-8')
+    data = f.readlines()
+    f.close()
+    for each_line in data:
+        each_line = each_line.strip()
+        each_line_list = each_line.split(': ')
+        if each_line_list[0]=='time':
+            post_time = each_line_list[1]
+            post_time = re.sub(r'T',' ',post_time)
+            post_time = re.sub(r'\+\d{4}','',post_time)
+        if each_line_list[0]=='message':
+            message = each_line_list[1]
+            message = re.sub(r'\\n','<br>',message)
+        if each_line_list[0]=='from':
+            post_from = each_line_list[1]
+    curr_post_content = [name_zid_dir[post_from],post_time,message,post_from]
+    postid_list = post_id.split('/')
+    all_data_files = sorted(os.listdir("{}/{}".format(students_dir,postid_list[0])))
+    post_file_name = postid_list[1].split('.')[0]
+    comment_dir = {}
+    comment_timelist = []
+    result_list = []
+    for each in all_data_files:
+        if re.match(r'{}\-.+\.txt'.format(post_file_name),each):
+            current_path = students_dir + "/" + postid_list[0] + "/" + each
+            if sys.version[0] == '2':
+                f = open(current_path,'r')
+            else:
+                f = open(current_path,'r', encoding='utf-8')
+            data = f.readlines()
+            f.close()
+            for each_line in data:
+                each_line = each_line.strip()
+                each_line_list = each_line.split(': ')
+                if each_line_list[0]=='time':
+                    post_time = each_line_list[1]
+                    post_time = re.sub(r'T',' ',post_time)
+                    post_time = re.sub(r'\+\d{4}','',post_time)
+                if each_line_list[0]=='message':
+                    message = each_line_list[1]
+                    message = re.sub(r'\\n','<br>',message)
+                    m = re.search(r'z\d{7}',message)
+                    if m:
+                        contains_id_list = re.findall(r'z\d{7}',message)
+                        for contains_id in contains_id_list:
+                            change_content = "<a href=\"start?zid={}\">{}</a>".format(contains_id,name_zid_dir[contains_id])
+                            message = re.sub(contains_id,change_content,message)
+                if each_line_list[0]=='from':
+                    comment_from = each_line_list[1]
+            comment_timelist.append(post_time)
+            comment_dir[post_time] = [name_zid_dir[comment_from],post_time,message,comment_from]
+    comment_timelist = sorted(comment_timelist)
+    comment_timelist.reverse()
+    for each_time in comment_timelist:
+        result_list.append(comment_dir[each_time])
+    return render_template('comments.html',curr_post=curr_post_content,result_list=result_list)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+<div style="position:relative; top:-55px; left:30px;">
+  <form method="POST" action="{{url_for('start')}}">
+      <input type="submit" value="Back to home page" style="background-color:blue; font-size: 20px;">
+  </form>
+</div>
+
+<div style="border-style: groove; background-color:white; width:750px; position:relative; left:320px;
+margin:0cm 0cm 0.5cm 0cm;">
+  <a href="start?zid={{curr_post[3]}}" style="width:90%;">{{curr_post[0]}}</a>
+  <p style=" width:90%;">{{curr_post[1]}}<p>
+  <p style=" width:90%;">{{curr_post[2]|safe}}<p>
+  <hr>
+
+<h2>Comments:</h2>
+{% for each_result in result_list %}
+<div style="background-color:white; width:750px;
+margin:0cm 0cm 0.5cm 0cm;">
+  <a href="start?zid={{each_result[3]}}" style="width:90%;">{{each_result[0]}}: </a>
+  <p style=" width:90%;">{{each_result[1]}}<p>
+  <p style=" width:90%;">{{each_result[2]|safe}}<p>
+  <hr>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}

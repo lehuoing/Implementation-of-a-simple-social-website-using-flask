@@ -75,7 +75,8 @@
   {% for message in post_list %}
   <div style="border-style: groove; background-color:white; position:relative; left:600px; top:-180px; width:750px; margin:0.5cm;">
     <p style="width:90%;">{{message[0]}} <p>
-    <p style=" width:90%;">{{message[1]|safe}} <p>
+    <p style="width:90%;">{{message[1]|safe}} <p>
+    <a href="post_comment?postid={{message[2]}}" style="width:90%;">Show comments</a>
   </div>
   {% endfor %}
 
