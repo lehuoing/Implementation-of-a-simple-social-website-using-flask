@@ -3,7 +3,7 @@
 # https://cgi.cse.unsw.edu.au/~z5129023/ass2/UNSWtalk.cgi/
 
 import os,re,sys,time
-from flask import Flask, render_template, session, request
+from flask import Flask, render_template, session, request, redirect, url_for
 if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding("utf-8")
@@ -396,6 +396,69 @@ def post_result():
     print(result_list)
     return render_template('post_result.html',result_list=result_list,keywords=need_search)
 
+
+@app.route('/edit_information', methods=['POST'])
+def edit_information():
+    if 'zid' not in session:
+        return render_template('login.html')
+    student_to_show = session['zid']
+    details_filename = os.path.join(students_dir, student_to_show, "student.txt")
+    with open(details_filename) as f:
+        details = f.readlines()
+    full_name = ''
+    birthday = ''
+    program = ''
+    suburb = ''
+    for line in details:
+        line_list = line.split(': ')
+        if line_list[0]=="full_name":
+            full_name = line_list[1]
+        elif line_list[0]=="birthday":
+            birthday = line_list[1]
+        elif line_list[0]=="program":
+            program = line_list[1]
+        elif line_list[0]=="home_suburb":
+            suburb = line_list[1]
+    f.close()
+    return render_template('edit_information.html',full_name=full_name,
+                            birthday=birthday,program=program,suburb=suburb)
+
+
+@app.route('/save_changeinfor', methods=['POST'])
+def save_changeinfor():
+    if 'zid' not in session:
+        return render_template('login.html')
+    student_to_show = session['zid']
+    details_filename = os.path.join(students_dir, student_to_show, "student.txt")
+    full_name = request.form.get('full_name','')
+    birthday = request.form.get('birthday','')
+    program = request.form.get('program','')
+    suburb = request.form.get('suburb','')
+    f = open(details_filename,'r')
+    data = f.readlines()
+    f.close()
+    need_w_data = ""
+    for each in data:
+        if re.search(r'full_name',each):
+            each = "full_name: " + full_name + "\n"
+        elif re.search(r'birthday',each):
+            each = "birthday: " + birthday + "\n"
+        elif re.search(r'program',each):
+            each = "program: " + program + "\n"
+        elif re.search(r'suburb',each):
+            each = "home_suburb: " + suburb + "\n"
+        need_w_data = need_w_data + each
+    f = open(details_filename,'w')
+    f.write(need_w_data)
+    f.close()
+    profile_file = request.files['file']
+    if profile_file:
+        img_data = profile_file.read()
+        current_path = os.path.join(students_dir, student_to_show, "img.jpg")
+        f = open(current_path,'wb')
+        f.write(img_data)
+        f.close()
+    return redirect(url_for('start'))
 
 
 
