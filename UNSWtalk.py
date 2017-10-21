@@ -49,6 +49,7 @@ def check_login():
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('zid')
+    session.pop('friend_list')
     return render_template('login.html')
 
 
@@ -56,6 +57,7 @@ def logout():
 @app.route('/start', methods=['GET','POST'])
 def start():
     flag = 0
+    is_friend_flag = 0
     if 'zid' not in session:
         return render_template('login.html')
     students = sorted(os.listdir(students_dir))
@@ -63,9 +65,11 @@ def start():
     student_to_show = request.args.get('zid', student_to_show)
     if student_to_show!=session['zid']:
         flag = 1
+        session['curr_page'] = student_to_show
     student_to_show = request.form.get('cometo', student_to_show)
     if student_to_show!=session['zid']:
         flag = 1
+        session['curr_page'] = student_to_show
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
     image_filename = os.path.join(students_dir, student_to_show, "img.jpg")
     post_list = []
@@ -125,6 +129,10 @@ def start():
             friend_list = line_list[1].split(', ')
     f.close()
     # friend list
+    if student_to_show==session['zid']:
+        session['friend_list'] = friend_list
+    if student_to_show in session['friend_list']:
+        is_friend_flag = 1
     friend_details = []
     for each_friend in friend_list:
         current_path = students_dir + "/" + each_friend + "/" + "student.txt"
@@ -159,6 +167,7 @@ def start():
     except:
         img_path = ''
     return render_template('start.html', flag=flag,
+                            is_friend_flag = is_friend_flag,
                             full_name=full_name,
                             zid = zid,
                             birthday = birthday,
@@ -458,6 +467,49 @@ def save_changeinfor():
         f = open(current_path,'wb')
         f.write(img_data)
         f.close()
+    return redirect(url_for('start'))
+
+
+@app.route('/add_friend', methods=['POST'])
+def add_friend():
+    if 'zid' not in session:
+        return render_template('login.html')
+    student_to_show = session['zid']
+    need_add = session['curr_page']
+    details_filename = os.path.join(students_dir, student_to_show, "student.txt")
+    f = open(details_filename,'r')
+    data = f.readlines()
+    f.close()
+    need_w_data = ""
+    for each in data:
+        if re.search(r'friends',each):
+            each = re.sub(r'\)',', {})'.format(need_add),each)
+        need_w_data = need_w_data + each
+    f = open(details_filename,'w')
+    f.write(need_w_data)
+    f.close()
+    return redirect(url_for('start'))
+
+
+
+@app.route('/delete_friend', methods=['POST'])
+def delete_friend():
+    if 'zid' not in session:
+        return render_template('login.html')
+    student_to_show = session['zid']
+    need_d = session['curr_page']
+    details_filename = os.path.join(students_dir, student_to_show, "student.txt")
+    f = open(details_filename,'r')
+    data = f.readlines()
+    f.close()
+    need_w_data = ""
+    for each in data:
+        if re.search(r'friends',each):
+            each = re.sub(r', {}'.format(need_d),'',each)
+        need_w_data = need_w_data + each
+    f = open(details_filename,'w')
+    f.write(need_w_data)
+    f.close()
     return redirect(url_for('start'))
 
 

@@ -38,6 +38,20 @@
 </div>
 {% endif %}
 
+{% if is_friend_flag == 0 and flag == 1 %}
+  <div style="position:relative; top:-40px;">
+    <form method="POST" action="{{url_for('add_friend')}}">
+        <input type="submit" value="Add friend" style="background-color:red; font-size: 20px;">
+    </form>
+  </div>
+{% elif is_friend_flag == 1 and flag == 1 %}
+  <div style="position:relative; top:-40px;">
+    <form method="POST" action="{{url_for('delete_friend')}}">
+        <input type="submit" value="Delete friend" style="background-color:red; font-size: 20px;">
+    </form>
+  </div>
+{% endif %}
+
 <div style="float:right; position:relative; top:-100px; right:50px;">
   <form method="POST" action="{{url_for('result')}}">
     <p> Name/ID: <input name="search_item" > <input type="submit" value="Search" > </p>
