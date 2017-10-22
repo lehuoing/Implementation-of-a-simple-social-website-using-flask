@@ -130,33 +130,34 @@ def start():
             friend_list = line_list[1].split(', ')
     f.close()
     # friend list
-    if student_to_show==session['zid']:
-        session['friend_list'] = friend_list
-    if student_to_show in session['friend_list']:
-        is_friend_flag = 1
     friend_details = []
-    for each_friend in friend_list:
-        current_path = students_dir + "/" + each_friend + "/" + "student.txt"
-        f = open(current_path,'r')
-        friend_data = f.readlines()
-        f.close()
-        for each_data in friend_data:
-            each_list = each_data.split(':')
-            if each_list[0]=="full_name":
-                friend_name = each_list[1]
-                continue
-        current_path = students_dir + "/" + each_friend + "/" + "img.jpg"
-        try:
-            f = open(current_path,'rb')
-            curr_data = f.read()
+    if friend_list!=['']:
+        if student_to_show==session['zid']:
+            session['friend_list'] = friend_list
+        if student_to_show in session['friend_list']:
+            is_friend_flag = 1
+        for each_friend in friend_list:
+            current_path = students_dir + "/" + each_friend + "/" + "student.txt"
+            f = open(current_path,'r')
+            friend_data = f.readlines()
             f.close()
-            f = open("./static/"+each_friend+".jpg",'wb')
-            f.write(curr_data)
-            f.close()
-            each_path = "./static/"+each_friend+".jpg"
-        except:
-            each_path = ''
-        friend_details.append([friend_name,each_path,each_friend])
+            for each_data in friend_data:
+                each_list = each_data.split(':')
+                if each_list[0]=="full_name":
+                    friend_name = each_list[1]
+                    continue
+            current_path = students_dir + "/" + each_friend + "/" + "img.jpg"
+            try:
+                f = open(current_path,'rb')
+                curr_data = f.read()
+                f.close()
+                f = open("./static/"+each_friend+".jpg",'wb')
+                f.write(curr_data)
+                f.close()
+                each_path = "./static/"+each_friend+".jpg"
+            except:
+                each_path = ''
+            friend_details.append([friend_name,each_path,each_friend])
     img_path="./static/"+student_to_show+".jpg"
     try:
         f = open(image_filename,'rb')
@@ -265,6 +266,8 @@ def posts():
         if line_list[0]=='friends':
             line_list[1] = re.sub(r'[\(\)]','',line_list[1].strip())
             friend_list = line_list[1].split(', ')
+    if friend_list==['']:
+        return render_template('friend_posts.html')
     for each_friend in friend_list:
         current_path = students_dir + "/" + each_friend + "/" + "student.txt"
         f = open(current_path,'r')
@@ -507,6 +510,7 @@ def delete_friend():
     for each in data:
         if re.search(r'friends',each):
             each = re.sub(r', {}'.format(need_d),'',each)
+            each = re.sub(r'\({}, '.format(need_d),'(',each)
         need_w_data = need_w_data + each
     f = open(details_filename,'w')
     f.write(need_w_data)
@@ -591,6 +595,28 @@ def post_comment():
         result_list.append(comment_dir[each_time])
     return render_template('comments.html',curr_post=curr_post_content,result_list=result_list)
 
+
+@app.route('/signup', methods=['GET','POST'])
+def signup():
+    return render_template('signup.html')
+
+@app.route('/confirm_email', methods=['POST'])
+def confirm_email():
+    zid = request.form.get('zid','')
+    email_addr = request.form.get('email','')
+    if not re.match(r'^z\d{7}$',zid):
+        return render_template('signup.html',error="Invaild zid")
+    elif os.path.exists(students_dir + '/' + zid):
+        return render_template('signup.html',error="Account exists")
+    if not re.match(r'^.+@.+\..+$',email_addr):
+        return render_template('signup.html',error="Invaild email address")
+    return render_template('new_information.html',error="Comfirm email has been sent!")
+
+@app.route('/new_information', methods=['GET','POST'])
+def new_information():
+    confirm_number = request.form.get('confirm_number','')
+    if confirm_number!='123':
+        return render_template('new_information.html',error="Wrong confirm number!")
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

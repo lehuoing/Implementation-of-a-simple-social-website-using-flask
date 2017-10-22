@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+<div style="position:relative; top:-55px; left:30px;">
+  <form method="POST" action="{{url_for('start')}}">
+      <input type="submit" value="Back to login page" style="background-color:blue; font-size: 20px;">
+  </form>
+</div>
+
+{{ error }}
+
+<div>
+  <form method="POST" action="{{url_for('confirm_email')}}">
+  <p>zid: <input name="zid" style="width:5cm"></p>
+  <p>Email: <input name="email" style="width:5cm"></p>
+  <input type="submit" value="Submit">
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+<div style="position:relative; top:-55px; left:30px;">
+  <form method="POST" action="{{url_for('start')}}">
+      <input type="submit" value="Back to login page" style="background-color:blue; font-size: 20px;">
+  </form>
+</div>
+
+{{ error }}
+
+<div>
+  <form method="POST" action="{{url_for('new_information')}}">
+    <p>Confirm number: <input name="confirm_number" style="width:5cm"></p>
+    <p>Full name: <input name="full_name" style="width:5cm"></p>
+    <p>Birthday: <input name="birthday" style="width:5cm"></p>
+    <p>Program: <input name="program" style="width:5cm"></p>
+    <p>Suburb: <input name="suburb" style="width:5cm"></p>
+    <p>Upload profile picture: <input type=file name="file"></p>
+    <input type="submit" value="Submit">
+  </form>
+</div>
+
+{% endblock %}
