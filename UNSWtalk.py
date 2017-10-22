@@ -48,8 +48,10 @@ def check_login():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    session.pop('zid')
-    session.pop('friend_list')
+    if 'zid' in session:
+        session.pop('zid')
+    if 'friend_list' in session:
+        session.pop('friend_list')
     return render_template('login.html')
 
 
@@ -134,7 +136,7 @@ def start():
     if friend_list!=['']:
         if student_to_show==session['zid']:
             session['friend_list'] = friend_list
-        if student_to_show in session['friend_list']:
+        if 'friend_list' in session and student_to_show in session['friend_list']:
             is_friend_flag = 1
         for each_friend in friend_list:
             current_path = students_dir + "/" + each_friend + "/" + "student.txt"
@@ -508,6 +510,7 @@ def add_friend():
     for each in data:
         if re.search(r'friends',each):
             each = re.sub(r'\)',', {})'.format(need_add),each)
+            each = re.sub(r'\(, ','(',each)
         need_w_data = need_w_data + each
     f = open(details_filename,'w')
     f.write(need_w_data)
@@ -531,6 +534,7 @@ def delete_friend():
         if re.search(r'friends',each):
             each = re.sub(r', {}'.format(need_d),'',each)
             each = re.sub(r'\({}, '.format(need_d),'(',each)
+            each = re.sub(r'\({}\)'.format(need_d),'()',each)
         need_w_data = need_w_data + each
     f = open(details_filename,'w')
     f.write(need_w_data)
@@ -635,21 +639,62 @@ def confirm_email():
     # email part
 
 
-    # new_path = students_dir + "/" + zid
-    # os.mkdir(new_path)
+    new_path = students_dir + "/" + zid
+    os.mkdir(new_path)
+    new_path = students_dir + "/" + zid + "/" + "student.txt"
+    f = open(new_path,'w')
+    f.write("zid: {}\n".format(zid))
+    f.write("email: {}\n".format(email_addr))
+    f.write("friends: ()\n")
+    f.close()
+    session['new_zid'] = zid
     return render_template('new_information.html',error="Comfirm email has been sent!")
+
 
 @app.route('/new_information', methods=['GET','POST'])
 def new_information():
+    if 'new_zid' not in session:
+        return render_template('login.html')
+    
+    #need change
+    real_cnumber = '123'
+
     confirm_number = request.form.get('confirm_number','')
     password = request.form.get('password','')
     confirm_password = request.form.get('confirm_password','')
-    if confirm_number!='123':
+    if confirm_number!=real_cnumber:
         return render_template('new_information.html',error="Wrong confirm number!")
     if password=='':
         return render_template('new_information.html',error="Password cannot be empty!")
     if confirm_password!=password:
         return render_template('new_information.html',error="Twice inputs password are different!")
+    full_name = request.form.get('full_name','')
+    birthday = request.form.get('birthday','')
+    program = request.form.get('program','')
+    suburb = request.form.get('suburb','')
+    current_zid = session['new_zid']
+    current_path = students_dir + "/" + current_zid + "/" + "student.txt"
+    f = open(current_path,'a')
+    if full_name!='':
+        f.write("full_name: {}\n".format(full_name))
+    if birthday!='':
+        f.write("birthday: {}\n".format(birthday))
+    if program!='':
+        f.write("program: {}\n".format(program))
+    if suburb!='':
+        f.write("home_suburb: {}\n".format(suburb))
+    f.write("password: {}\n".format(password))
+    f.close()
+    profile_file = request.files['file']
+    if profile_file:
+        img_data = profile_file.read()
+        current_path = os.path.join(students_dir, current_zid, "img.jpg")
+        f = open(current_path,'wb')
+        f.write(img_data)
+        f.close()
+    session.pop('new_zid')
+    return render_template('login.html',error="New account created. Please login.")
+
 
 
 if __name__ == '__main__':
