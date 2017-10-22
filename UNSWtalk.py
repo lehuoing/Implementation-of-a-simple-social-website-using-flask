@@ -4,6 +4,8 @@
 
 import os,re,sys,time,random
 from flask import Flask, render_template, session, request, redirect, url_for
+from email.utils import parseaddr
+import subprocess
 if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding("utf-8")
@@ -15,6 +17,22 @@ students_dir = "dataset-medium";
 app = Flask(__name__)
 
 
+def send_email(to,subject,message):
+    mutt = [
+            'mutt',
+            '-s',
+            subject,
+            '-e', 'set copy=no',
+            '-e', 'set realname=UNSWtalk',
+            '--', to
+    ]
+    subprocess.run(
+            mutt,
+            input = message.encode('utf-8'),
+            stderr = subprocess.PIPE,
+            stdout = subprocess.PIPE)
+
+
 @app.route('/', methods=['GET','POST'])
 def login():
     return render_template('login.html')
@@ -23,25 +41,24 @@ def login():
 
 @app.route('/check_login', methods=['POST'])
 def check_login():
-    # zid = request.form.get('zid', '')
-    # password = request.form.get('password', '')
-    # students = sorted(os.listdir(students_dir))
-    # if zid not in students:
-    #     return render_template('login.html',error='Unknown zid')
-    # else:
-    #     current_path = students_dir + '/' + zid + '/' + "student.txt"
-    #     f = open(current_path,'r')
-    #     data = f.readlines()
-    #     f.close()
-    #     for each_line in data:
-    #         each_line = each_line.strip()
-    #         each_list = each_line.split(': ')
-    #         if each_list[0]=='password':
-    #             read_password = each_list[1]
-    #             break
-    #     if read_password != password:
-    #         return render_template('login.html',error='Wrong password')
-    zid = 'z5190009'
+    zid = request.form.get('zid', '')
+    password = request.form.get('password', '')
+    students = sorted(os.listdir(students_dir))
+    if zid not in students:
+        return render_template('login.html',error='Unknown zid')
+    else:
+        current_path = students_dir + '/' + zid + '/' + "student.txt"
+        f = open(current_path,'r')
+        data = f.readlines()
+        f.close()
+        for each_line in data:
+            each_line = each_line.strip()
+            each_list = each_line.split(': ')
+            if each_list[0]=='password':
+                read_password = each_list[1]
+                break
+        if read_password != password:
+            return render_template('login.html',error='Wrong password')
     session['zid'] = zid
     return start()
 
@@ -636,10 +653,6 @@ def confirm_email():
     if not re.match(r'^.+@.+\..+$',email_addr):
         return render_template('signup.html',error="Invaild email address")
 
-
-    # email part
-
-
     new_path = students_dir + "/" + zid
     os.mkdir(new_path)
     new_path = students_dir + "/" + zid + "/" + "student.txt"
@@ -650,8 +663,12 @@ def confirm_email():
     f.close()
     new_path = students_dir + "/" + zid + "/" + "confirm_number.txt"
     f = open(new_path,'w')
-    f.write(str(random.randint(1000,9999)))
+    curr_cnumber = str(random.randint(1000,9999))
+    f.write(curr_cnumber)
     f.close()
+    # send email
+    send_email(email_addr,'New account creation','Your confirm number is {}.'.format(curr_cnumber))
+
     session['new_zid'] = zid
     return render_template('new_information.html',error="Confirm email has been sent!")
 
@@ -728,11 +745,12 @@ def set_newpassword():
         session['need_recover'] = need_recover
         new_path = students_dir + "/" + need_recover + "/" + "confirm_number.txt"
         f = open(new_path,'w')
-        f.write(str(random.randint(1000,9999)))
+        curr_cnumber = str(random.randint(1000,9999))
+        f.write(curr_cnumber)
         f.close()
 
     # send email
-
+    send_email(email,'Password recovery','Your confirm number is {}.'.format(curr_cnumber))
     return render_template('set_newpassword.html',error="Confirm email has been sent.")
 
 @app.route('/save_password', methods=['POST'])
