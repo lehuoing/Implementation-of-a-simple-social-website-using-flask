@@ -703,6 +703,76 @@ def new_information():
     return render_template('login.html',error="New account created. Please login.")
 
 
+@app.route('/password_recovery', methods=['GET','POST'])
+def password_recovery():
+    return render_template('password_recovery.html')
+
+@app.route('/set_newpassword', methods=['POST'])
+def set_newpassword():
+    email = request.form.get('email','')
+    if email=='':
+        return render_template('password_recovery.html',error="Please input email")
+    all_students = sorted(os.listdir(students_dir))
+    need_recover = ''
+    for each_stu in all_students:
+        current_path = students_dir + "/" + each_stu + "/" + "student.txt"
+        f = open(current_path,'r')
+        data = f.read()
+        f.close()
+        if re.search(r'email: {}'.format(email),data):
+            need_recover = each_stu
+            break
+    if need_recover=='':
+        return render_template('password_recovery.html',error="Account does not exist")
+    else:
+        session['need_recover'] = need_recover
+        new_path = students_dir + "/" + need_recover + "/" + "confirm_number.txt"
+        f = open(new_path,'w')
+        f.write(str(random.randint(1000,9999)))
+        f.close()
+
+    # send email
+
+    return render_template('set_newpassword.html',error="Confirm email has been sent.")
+
+@app.route('/save_password', methods=['POST'])
+def save_password():
+    if 'need_recover' not in session:
+        return render_template('login.html')
+    zid = session['need_recover']
+
+    confirm_number_path = students_dir + "/" + zid + "/" + "confirm_number.txt"
+    f = open(confirm_number_path,'r')
+    real_cnumber = f.read()
+    f.close()
+    confirm_number = request.form.get('confirm_number','')
+    password = request.form.get('password','')
+    confirm_password = request.form.get('confirm_password','')
+    if confirm_number!=real_cnumber:
+        return render_template('set_newpassword.html',error="Wrong confirm number!")
+    if password=='':
+        return render_template('set_newpassword.html',error="Password cannot be empty!")
+    if confirm_password!=password:
+        return render_template('set_newpassword.html',error="Twice inputs password are different!")
+
+    current_path = students_dir + "/" + zid + "/" + "student.txt"
+
+    f = open(current_path,'r')
+    data = f.readlines()
+    f.close()
+    need_w_data = ""
+    for each in data:
+        if re.search(r'password',each):
+            each = "password: " + password + "\n"
+        need_w_data = need_w_data + each
+    f = open(current_path,'w')
+    f.write(need_w_data)
+    f.close()
+    return render_template('login.html',error="Password recovered. Please login.")
+
+
+
+
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
