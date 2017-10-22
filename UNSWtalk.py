@@ -485,10 +485,11 @@ def save_changeinfor():
     profile_file = request.files['file']
     if profile_file:
         img_data = profile_file.read()
-        current_path = os.path.join(students_dir, student_to_show, "img.jpg")
-        f = open(current_path,'wb')
-        f.write(img_data)
-        f.close()
+        if img_data.decode()!='':
+            current_path = os.path.join(students_dir, student_to_show, "img.jpg")
+            f = open(current_path,'wb')
+            f.write(img_data)
+            f.close()
     current_path = students_dir + "/" + student_to_show + "/" + "profile_text.txt"
     f = open(current_path,'w')
     f.write(profile_content)
@@ -693,10 +694,11 @@ def new_information():
     profile_file = request.files['file']
     if profile_file:
         img_data = profile_file.read()
-        current_path = os.path.join(students_dir, current_zid, "img.jpg")
-        f = open(current_path,'wb')
-        f.write(img_data)
-        f.close()
+        if img_data.decode()!='':
+            current_path = os.path.join(students_dir, current_zid, "img.jpg")
+            f = open(current_path,'wb')
+            f.write(img_data)
+            f.close()
     session.pop('new_zid')
     return render_template('login.html',error="New account created. Please login.")
 
