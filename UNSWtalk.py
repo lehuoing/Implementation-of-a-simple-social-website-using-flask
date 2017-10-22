@@ -2,7 +2,7 @@
 
 # https://cgi.cse.unsw.edu.au/~z5129023/ass2/UNSWtalk.cgi/
 
-import os,re,sys,time
+import os,re,sys,time,random
 from flask import Flask, render_template, session, request, redirect, url_for
 if sys.version[0] == '2':
     reload(sys)
@@ -647,18 +647,23 @@ def confirm_email():
     f.write("email: {}\n".format(email_addr))
     f.write("friends: ()\n")
     f.close()
+    new_path = students_dir + "/" + zid + "/" + "confirm_number.txt"
+    f = open(new_path,'w')
+    f.write(str(random.randint(1000,9999)))
+    f.close()
     session['new_zid'] = zid
-    return render_template('new_information.html',error="Comfirm email has been sent!")
+    return render_template('new_information.html',error="Confirm email has been sent!")
 
 
-@app.route('/new_information', methods=['GET','POST'])
+@app.route('/new_information', methods=['POST'])
 def new_information():
     if 'new_zid' not in session:
         return render_template('login.html')
-    
-    #need change
-    real_cnumber = '123'
 
+    confirm_number_path = students_dir + "/" + session['new_zid'] + "/" + "confirm_number.txt"
+    f = open(confirm_number_path,'r')
+    real_cnumber = f.read()
+    f.close()
     confirm_number = request.form.get('confirm_number','')
     password = request.form.get('password','')
     confirm_password = request.form.get('confirm_password','')
