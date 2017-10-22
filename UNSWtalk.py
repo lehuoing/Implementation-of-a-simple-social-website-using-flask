@@ -285,6 +285,7 @@ def posts():
                 else:
                     f = open(each_path,'r', encoding='utf-8')
                 data = f.readlines()
+                f.close()
                 for each_line in data:
                     each_line = each_line.strip()
                     each_line_list = each_line.split(': ')
@@ -295,9 +296,9 @@ def posts():
                     if each_line_list[0]=='message':
                         message = each_line_list[1]
                         message = re.sub(r'\\n','<br>',message)
-                message_dir[post_time] = [post_time,name_id_dir[each_friend],each_friend,message]
+                post_inf = each_friend + "/" + str(each)
+                message_dir[post_time] = [post_time,name_id_dir[each_friend],each_friend,message,post_inf]
                 post_time_list.append(post_time)
-                f.close()
     post_time_list = sorted(post_time_list)
     post_time_list.reverse()
     for each_time in post_time_list:
