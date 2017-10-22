@@ -168,6 +168,13 @@ def start():
         f.close()
     except:
         img_path = ''
+    current_path = students_dir + "/" + student_to_show + "/" + "profile_text.txt"
+    try:
+        f = open(current_path,'r')
+        profile_content = f.read()
+        f.close()
+    except:
+        profile_content = ''
     return render_template('start.html', flag=flag,
                             is_friend_flag = is_friend_flag,
                             full_name=full_name,
@@ -177,7 +184,8 @@ def start():
                             suburb = suburb,
                             img_path=img_path,
                             post_list=post_content,
-                            friend_list=friend_details)
+                            friend_list=friend_details,
+                            profile_content=profile_content)
 
 
 
@@ -433,8 +441,15 @@ def edit_information():
         elif line_list[0]=="home_suburb":
             suburb = line_list[1]
     f.close()
+    current_path = students_dir + "/" + student_to_show + "/" + "profile_text.txt"
+    try:
+        f = open(current_path,'r')
+        profile_content = f.read()
+        f.close()
+    except:
+        profile_content = ''
     return render_template('edit_information.html',full_name=full_name,
-                            birthday=birthday,program=program,suburb=suburb)
+                            birthday=birthday,program=program,suburb=suburb,profile_content=profile_content)
 
 
 @app.route('/save_changeinfor', methods=['POST'])
@@ -447,6 +462,7 @@ def save_changeinfor():
     birthday = request.form.get('birthday','')
     program = request.form.get('program','')
     suburb = request.form.get('suburb','')
+    profile_content = request.form.get('profile_content','')
     f = open(details_filename,'r')
     data = f.readlines()
     f.close()
@@ -471,6 +487,10 @@ def save_changeinfor():
         f = open(current_path,'wb')
         f.write(img_data)
         f.close()
+    current_path = students_dir + "/" + student_to_show + "/" + "profile_text.txt"
+    f = open(current_path,'w')
+    f.write(profile_content)
+    f.close()
     return redirect(url_for('start'))
 
 
@@ -610,13 +630,27 @@ def confirm_email():
         return render_template('signup.html',error="Account exists")
     if not re.match(r'^.+@.+\..+$',email_addr):
         return render_template('signup.html',error="Invaild email address")
+
+
+    # email part
+
+
+    # new_path = students_dir + "/" + zid
+    # os.mkdir(new_path)
     return render_template('new_information.html',error="Comfirm email has been sent!")
 
 @app.route('/new_information', methods=['GET','POST'])
 def new_information():
     confirm_number = request.form.get('confirm_number','')
+    password = request.form.get('password','')
+    confirm_password = request.form.get('confirm_password','')
     if confirm_number!='123':
         return render_template('new_information.html',error="Wrong confirm number!")
+    if password=='':
+        return render_template('new_information.html',error="Password cannot be empty!")
+    if confirm_password!=password:
+        return render_template('new_information.html',error="Twice inputs password are different!")
+
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

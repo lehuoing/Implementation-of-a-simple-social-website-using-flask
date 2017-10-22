@@ -94,4 +94,11 @@
         </ul>
   </div>
 
+  {% if profile_content%}
+  <div style="position:absolute; top:900px;">
+  <p>Profile text:</p>
+  <p>{{profile_content}}</p>
+  </div>
+  {% endif %}
+
 {% endblock %}
