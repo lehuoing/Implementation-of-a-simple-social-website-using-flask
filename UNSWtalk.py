@@ -485,7 +485,7 @@ def save_changeinfor():
     profile_file = request.files['file']
     if profile_file:
         img_data = profile_file.read()
-        if img_data.decode()!='':
+        if img_data!=''.encode('utf-8'):
             current_path = os.path.join(students_dir, student_to_show, "img.jpg")
             f = open(current_path,'wb')
             f.write(img_data)
@@ -694,7 +694,7 @@ def new_information():
     profile_file = request.files['file']
     if profile_file:
         img_data = profile_file.read()
-        if img_data.decode()!='':
+        if img_data!=''.encode('utf-8'):
             current_path = os.path.join(students_dir, current_zid, "img.jpg")
             f = open(current_path,'wb')
             f.write(img_data)
